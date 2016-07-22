@@ -19,8 +19,8 @@ module AWS
 
       def initialize api_version, operation
         @api_version = api_version
-        @operation_name = operation[:name]
-        @grammar = OptionGrammar.customize(operation[:inputs])
+        @operation_name = operation[":name"]
+        @grammar = OptionGrammar.customize(operation[":inputs"])
       end
 
       def populate_request request, options
