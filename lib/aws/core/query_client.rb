@@ -18,7 +18,7 @@ module AWS
       protected
 
       def self.request_builder_for api_config, operation
-        QueryRequestBuilder.new(api_config[:api_version], operation)
+        QueryRequestBuilder.new(api_config[":api_version"], operation)
       end
 
       def self.response_parser_for api_config, operation
