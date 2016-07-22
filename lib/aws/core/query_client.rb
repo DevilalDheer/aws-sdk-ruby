@@ -22,7 +22,7 @@ module AWS
       end
 
       def self.response_parser_for api_config, operation
-        QueryResponseParser.new(operation[:outputs])
+        QueryResponseParser.new(operation[":outputs"])
       end
 
       def extract_error_details response

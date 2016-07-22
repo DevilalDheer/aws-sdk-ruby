@@ -558,20 +558,21 @@ module AWS
         # * the response is stubbed for testing
         #
         def add_client_request_method method_name, options = {}, &block
+          method_name = method_name.to_s.tr(':','')
+          if method_name.present?
+            operations << method_name
 
-          operations << method_name
+            ClientRequestMethodBuilder.new(self, method_name, &block)
 
-          ClientRequestMethodBuilder.new(self, method_name, &block)
+            method_def = <<-METHOD
+              def #{method_name}(*args, &block)
+                options = args.first ? args.first : {}
+                client_request(#{method_name.inspect}, options, &block)
+              end
+            METHOD
 
-          method_def = <<-METHOD
-            def #{method_name}(*args, &block)
-              options = args.first ? args.first : {}
-              client_request(#{method_name.inspect}, options, &block)
-            end
-          METHOD
-
-          module_eval(method_def)
-
+            module_eval(method_def)
+          end
         end
 
         # Loads the API configuration for the given API version.
@@ -593,12 +594,12 @@ module AWS
 
           api_config = load_api_config(api_version)
 
-          api_config[:operations].each do |operation|
+          api_config[":operations"].each do |operation|
 
             builder = request_builder_for(api_config, operation)
             parser = response_parser_for(api_config, operation)
 
-            define_client_method(operation[:method], builder, parser)
+            define_client_method(operation[":method"], builder, parser)
 
           end
         end

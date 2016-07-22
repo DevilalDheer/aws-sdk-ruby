@@ -513,12 +513,12 @@ module AWS
           descriptors.each do |desc|
             if desc.kind_of?(Hash)
               (name, arg) = desc.to_a.first
-              next if name == :documentation
+              next if name == ":documentation"
             else
               name = desc
               arg = nil
             end
-            class_name = Inflection.class_name(name.to_s)
+            class_name = Inflection.class_name(name.to_s.tr(':',''))
             mod = Descriptors::const_get(class_name)
             if arg
               mod.apply(option, arg)
